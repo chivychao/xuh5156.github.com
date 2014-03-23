@@ -54,6 +54,86 @@
     <header>
       
         <div class="icon"></div>
+        <time datetime="2014-03-23T12:23:21.000Z"><a href="/2014/03/23/languagemodel1/">3月 23 2014</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2014/03/23/languagemodel1/">统计语言模型</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="1-">1. 语言模型简介</h2>
+<p>语言模型，是用来计算一个句子出现的概率，或者预测给定历史词语序列下，一个词语出现的概率。</p>
+<pre><code>S=w1,w2,w3,...,wn
+P(S)=P(w1,w2,...,wn)=P(w1)P(w2|w1)P(w3|w1,w2)...P(wn|w1,...,wn-1)
+</code></pre><p>其中P(S)就是该句子S的出现概率，
+    P(wn|w1,...,wn-1)是给定历史(w1,w2,...,wn-1)下,词语wn出现的概率。</p>
+<p>那么该如何计算句子概率P(S)呢？P(w1)很简单，w1的出现次数除以语料中的总词数，而从w2开始，</p>
+<pre><code>P(wn|w1,...,wn-1) = P(w1,...,wn-1,wn) / P(w1,...,wn-1) 
+</code></pre><p>在上式中，w1,...,wn-1,wn出现的可能有词表数量的n次方，当n比较大时，会导致这个参数空间过大，难以计算；另一方面，n越大，词串越长，在语料中出现的概率越小，会导致数据非常稀疏。</p>
+<p>为了解决上述问题，伟大的马尔科夫提出了马尔科夫假设，即一个词语出现的概率仅与其前面出现的N个词语有关，也就是N-gram模型。
+根据N的取值，有</p>
+<ul>
+<li>unigram：1-gram，词语出现仅与自身有关，P(S)=P(w1)P(w2)P(w3)...P(wn)</li>
+<li>bigram：2-gram,词语出现仅与前一个词有关，P(S)=P(w1)p(w2|w1)P(w3|w2)...P(wn|wn-1)</li>
+<li><p>trigram：3-gram,词语出现仅与前两个词有关，P(S)=P(w1)p(w2|w1)P(w3|w2,w1)...p(wn|wn-1,wn-2)</p>
+<p>...</p>
+</li>
+</ul>
+<p>理论上，N越大，约束性越好，辨别力更强，但是统计信息不足，因此一般bigram和trigram用的最多。</p>
+<p>一般在构造语言模型时采用最大似然估计来进行概率估计，也就是通过计算词串在语料中出现的次数来计算相应的概率</p>
+<pre><code>P(wn|w1,...,wn-1) = P(w1,...,wn-1,wn) / P(w1,...,wn-1) 
+                  = C(w1,...,wn-1,wn) / C(w1,...,wn-1)
+</code></pre><p>为了表征句子首尾，会在句首添加<s>符号，在句末添加</s>。
+在构造时，为了避免数据溢出、提高性能，通常会使用取log后使用加法运算替代乘法运算，log一般以10为底的对数。 </p>
+<h2 id="2-">2. 评价标准</h2>
+<p>语言模型构造完成后，如何确定好坏呢？ 目前主要有两种评价方法：</p>
+<ul>
+<li>实用方法：通过查看该模型在实际应用（如语音识别、机器翻译）中的表现来评价，优点是直观、实用，缺点是缺乏针对性、不够客观；</li>
+<li>理论方法：迷惑度/困惑度/混乱度（perplexity），其基本思想是给测试集赋予较高概率值的语言模型较好，公式如下：<pre><code>      ![ppl](/image/ppl.png)
+</code></pre>Perplexity越小，句子概率越大，语言模型对测试集的表征越好，在相应的应用中的表现也会越好。在语音识别领域，一般情况下，识别的错误率会随着perplexity的减小而减小。</li>
+</ul>
+<h2 id="3-">3.主要应用</h2>
+<p>语言模型主要应用在一下领域：</p>
+<ol>
+<li>语音识别(Automatic Speech Recognition,ASR)</li>
+<li>统计机器翻译(Statistical Machine Translation,SMT)</li>
+<li>拼写纠正(Spelling Correction)</li>
+<li>手写体识别(Handwriting Recognition)</li>
+<li>自然语言生成(Natual Language Generation,NLG)
+...</li>
+</ol>
+<p>参考资料：</p>
+<ul>
+<li><a href="http://52opencourse.com/111/" target="_blank">斯坦福大学自然语言处理第四课语言模型</a></li>
+<li>数学之美  吴军</li>
+<li>Speech and Language Processing</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+	  
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2014-03-20T11:45:37.000Z"><a href="/2014/03/20/机器学习资源/">3月 20 2014</a></time>
       
       
@@ -162,6 +242,8 @@ Tutorial Slides by Andrew Moore
   
     <li><a href="/categories/机器学习/">机器学习</a><small>1</small></li>
   
+    <li><a href="/categories/自然语言处理/">自然语言处理</a><small>1</small></li>
+  
   </ul>
 </div>
 
@@ -170,7 +252,7 @@ Tutorial Slides by Andrew Moore
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/机器学习/" style="font-size: NaNpx;">机器学习</a>
+    <a href="/tags/Language Model/" style="font-size: NaNpx;">Language Model</a><a href="/tags/Machine Learning/" style="font-size: NaNpx;">Machine Learning</a><a href="/tags/N-gram/" style="font-size: NaNpx;">N-gram</a><a href="/tags/NLP/" style="font-size: NaNpx;">NLP</a>
   </div>
 </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>机器学习资源整理 | Xuh5156</title>
+  <title>统计语言模型 | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="机器学习资源整理"/>
+  <meta property="og:title" content="统计语言模型"/>
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -53,71 +53,62 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2014-03-20T11:45:37.000Z"><a href="/2014/03/20/机器学习资源/">3月 20 2014</a></time>
+        <time datetime="2014-03-23T12:23:21.000Z"><a href="/2014/03/23/languagemodel1/">3月 23 2014</a></time>
       
       
   
-    <h1 class="title">机器学习资源整理</h1>
+    <h1 class="title">统计语言模型</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>Tutorials:</p>
+        <h2 id="1-">1. 语言模型简介</h2>
+<p>语言模型，是用来计算一个句子出现的概率，或者预测给定历史词语序列下，一个词语出现的概率。</p>
+<pre><code>S=w1,w2,w3,...,wn
+P(S)=P(w1,w2,...,wn)=P(w1)P(w2|w1)P(w3|w1,w2)...P(wn|w1,...,wn-1)
+</code></pre><p>其中P(S)就是该句子S的出现概率，
+    P(wn|w1,...,wn-1)是给定历史(w1,w2,...,wn-1)下,词语wn出现的概率。</p>
+<p>那么该如何计算句子概率P(S)呢？P(w1)很简单，w1的出现次数除以语料中的总词数，而从w2开始，</p>
+<pre><code>P(wn|w1,...,wn-1) = P(w1,...,wn-1,wn) / P(w1,...,wn-1) 
+</code></pre><p>在上式中，w1,...,wn-1,wn出现的可能有词表数量的n次方，当n比较大时，会导致这个参数空间过大，难以计算；另一方面，n越大，词串越长，在语料中出现的概率越小，会导致数据非常稀疏。</p>
+<p>为了解决上述问题，伟大的马尔科夫提出了马尔科夫假设，即一个词语出现的概率仅与其前面出现的N个词语有关，也就是N-gram模型。
+根据N的取值，有</p>
 <ul>
-<li><p>Statistical Data Mining Tutorials 
-Tutorial Slides by Andrew Moore
-<a href="http://www.autonlab.org/tutorials/" target="_blank">http://www.autonlab.org/tutorials/</a></p>
-</li>
-<li><p>CS 281B / Stat 241B, Spring 2008:Statistical Learning Theory Readings
-<a href="http://www.cs.berkeley.edu/~bartlett/courses/281b-sp08/readings.html" target="_blank">http://www.cs.berkeley.edu/~bartlett/courses/281b-sp08/readings.html</a></p>
-</li>
-<li><p>Machine Learning Surveys:A list of literature surveys, reviews, and tutorials on Machine Learning and related topics
-<a href="http://www.mlsurveys.com/" target="_blank">http://www.mlsurveys.com/</a></p>
-</li>
-<li><p>机器学习经典论文/survey合集
-<a href="http://suanfazu.com/discussion/68" target="_blank">http://suanfazu.com/discussion/68</a></p>
+<li>unigram：1-gram，词语出现仅与自身有关，P(S)=P(w1)P(w2)P(w3)...P(wn)</li>
+<li>bigram：2-gram,词语出现仅与前一个词有关，P(S)=P(w1)p(w2|w1)P(w3|w2)...P(wn|wn-1)</li>
+<li><p>trigram：3-gram,词语出现仅与前两个词有关，P(S)=P(w1)p(w2|w1)P(w3|w2,w1)...p(wn|wn-1,wn-2)</p>
+<p>...</p>
 </li>
 </ul>
+<p>理论上，N越大，约束性越好，辨别力更强，但是统计信息不足，因此一般bigram和trigram用的最多。</p>
+<p>一般在构造语言模型时采用最大似然估计来进行概率估计，也就是通过计算词串在语料中出现的次数来计算相应的概率</p>
+<pre><code>P(wn|w1,...,wn-1) = P(w1,...,wn-1,wn) / P(w1,...,wn-1) 
+                  = C(w1,...,wn-1,wn) / C(w1,...,wn-1)
+</code></pre><p>为了表征句子首尾，会在句首添加<s>符号，在句末添加</s>。
+在构造时，为了避免数据溢出、提高性能，通常会使用取log后使用加法运算替代乘法运算，log一般以10为底的对数。 </p>
+<h2 id="2-">2. 评价标准</h2>
+<p>语言模型构造完成后，如何确定好坏呢？ 目前主要有两种评价方法：</p>
 <ul>
-<li>Berkeley course on Data Science
-<a href="http://www.datasciencecentral.com/profiles/blogs/berkeley-course-on-data-science" target="_blank">http://www.datasciencecentral.com/profiles/blogs/berkeley-course-on-data-science</a></li>
+<li>实用方法：通过查看该模型在实际应用（如语音识别、机器翻译）中的表现来评价，优点是直观、实用，缺点是缺乏针对性、不够客观；</li>
+<li>理论方法：迷惑度/困惑度/混乱度（perplexity），其基本思想是给测试集赋予较高概率值的语言模型较好，公式如下：<pre><code>      ![ppl](/image/ppl.png)
+</code></pre>Perplexity越小，句子概率越大，语言模型对测试集的表征越好，在相应的应用中的表现也会越好。在语音识别领域，一般情况下，识别的错误率会随着perplexity的减小而减小。</li>
 </ul>
-<a id="more"></a>
-
-<p>BOOKs:</p>
+<h2 id="3-">3.主要应用</h2>
+<p>语言模型主要应用在一下领域：</p>
+<ol>
+<li>语音识别(Automatic Speech Recognition,ASR)</li>
+<li>统计机器翻译(Statistical Machine Translation,SMT)</li>
+<li>拼写纠正(Spelling Correction)</li>
+<li>手写体识别(Handwriting Recognition)</li>
+<li>自然语言生成(Natual Language Generation,NLG)
+...</li>
+</ol>
+<p>参考资料：</p>
 <ul>
-<li><p>Introduction to Machine Learning
-<a href="http://alex.smola.org/drafts/thebook.pdf" target="_blank">http://alex.smola.org/drafts/thebook.pdf</a></p>
-</li>
-<li><p>The Elements of Statistical Learning
-<a href="http://statweb.stanford.edu/~tibs/ElemStatLearn/" target="_blank">http://statweb.stanford.edu/~tibs/ElemStatLearn/</a></p>
-</li>
-<li><p>Reinforcement Learning:An Introduction
-<a href="http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html" target="_blank">http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html</a></p>
-</li>
-<li><p>Bayesian Reasoning and Machine Learning
-<a href="http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/250214.pdf" target="_blank">http://web4.cs.ucl.ac.uk/staff/D.Barber/textbook/250214.pdf</a></p>
-</li>
-<li><p>Gaussian Processes for Machine Learning
-<a href="http://www.gaussianprocess.org/gpml/chapters/" target="_blank">http://www.gaussianprocess.org/gpml/chapters/</a></p>
-</li>
-<li><p>Introduction to Information Retrieval
-<a href="http://nlp.stanford.edu/IR-book/information-retrieval-book.html" target="_blank">http://nlp.stanford.edu/IR-book/information-retrieval-book.html</a></p>
-</li>
-<li><p>Convex Optimization – Boyd and Vandenberghe
-<a href="http://www.stanford.edu/~boyd/cvxbook/" target="_blank">http://www.stanford.edu/~boyd/cvxbook/</a></p>
-</li>
-<li><p>All of Statistics:A Concise Course in Statistical Inference 
-<a href="http://www.stat.cmu.edu/~larry/all-of-statistics/index.html" target="_blank">http://www.stat.cmu.edu/~larry/all-of-statistics/index.html</a></p>
-</li>
-<li><p>Machine Learning: a Probabilistic Perspective
-<a href="http://www.cs.ubc.ca/~murphyk/MLbook/" target="_blank">http://www.cs.ubc.ca/~murphyk/MLbook/</a>
-<a href="http://pan.baidu.com/s/1kZHVK" target="_blank">下载</a></p>
-</li>
-<li><p>机器学习经典书籍
-<a href="http://suanfazu.com/discussion/109/" target="_blank">http://suanfazu.com/discussion/109/</a></p>
-</li>
+<li><a href="http://52opencourse.com/111/" target="_blank">斯坦福大学自然语言处理第四课语言模型</a></li>
+<li>数学之美  吴军</li>
+<li>Speech and Language Processing</li>
 </ul>
 
       
@@ -130,10 +121,8 @@ Tutorial Slides by Andrew Moore
 	  
 <div class="pagepart clearfix">
   
-    <a href="/2014/03/18/hello-world/" class="alignleft prev" title="Hello World">Hello World</a>
+    <a href="/2014/03/20/机器学习资源/" class="alignleft prev" title="机器学习资源整理">机器学习资源整理</a>
   
-  
-    <a href="/2014/03/23/languagemodel1/" class="alignright next" title="统计语言模型">统计语言模型</a>
     
 </div>
 
