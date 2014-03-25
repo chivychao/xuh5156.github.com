@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>机器学习 | Xuh5156</title>
+  <title>统计语言模型(二) | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="统计语言模型(二)"/>
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -47,25 +47,85 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title category">机器学习</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-03-25T13:49:02.000Z"><a href="/2014/03/25/languagemodel2/">3月 25 2014</a></time>
+      
+      
+  
+    <h1 class="title">统计语言模型(二)</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <h2 id="4-">4. 语言模型平滑算法</h2>
+<p>由于训练语料的有限，大量的N-gram词语在训练语料中没有出现，而前文提到N-gram的训练一般采用最大似然估计的方法，这就导致了零概率问题。同时最大似然估计对于小频率词语的估计也很糟糕。这就是语言模型的<strong>数据稀疏</strong>问题。</p>
+<p>为了解决数据稀疏问题，提出了一系列的平滑算法，基本思想是降低已出现N-gram条件概率分布，以使未出现的N-gram条件概率分布非零，且经数据平滑后保证概率和为1。
+<a id="more"></a></p>
+<h3 id="-1-laplace-"><strong>1. Laplace平滑</strong></h3>
+<p>Laplace平滑算法也称为<strong>Add-one平滑</strong>，是最简单的平滑算法。其基本思想是，在每个N-gram的次数上加上1，保证每个N-gram至少出现1次。</p>
+<p><img src="/img/addone.jpg" alt=""></p>
+<p>  Ci是词语的个数，Nall是训练语料中所有词数，V是词典中词语总数。</p>
+<h3 id="-2-good-turing-"><strong>2 Good-Turing平滑</strong></h3>
+<p><strong>Good-Turing</strong>平滑是通过折扣出现c+1次的所有N-gram的个数到出现c次的N-gram的个数来实现平滑。Nc是所有出现c次的所有N-gram的个数。</p>
+<p><img src="/img/goodturing.jpg" alt=""></p>
+<h3 id="-3-interpolation-"><strong>3 Interpolation平滑(插值平滑)</strong></h3>
+<p>Laplace平滑和Good-Turing平滑算法对于训练语料中没有出现的N-gram都一视同仁，概率相等，这显然不太合理。比如：</p>
+<blockquote>
+<p>假设 C(be happy) = C(be zzz) = 0, 很明显感觉be happy出现的概率应该要比be zzz大一些。</p>
+</blockquote>
+<p>为此提出了<strong>线性插值平滑算法</strong>，也称为<strong>Jelinek-Mercer smoothing</strong>，其基本思想是将高阶模型和低阶模型作线性组合，利用低元N-gram模型对高元N-gram模型进行线性插值。因为在没有足够的数据对高元n-gram模型进行概率估计时，低元n-gram模型通常可以提供有用的信息。</p>
+<p>对于bigram，其公式如下：</p>
+<p><img src="/img/iterp2.jpg" alt=""></p>
+<p>同理对于N-gram:</p>
+<p><img src="/img/iterpn.jpg" alt=""></p>
+<p>其中λ可以通过EM算法在Held-out数据集上估计学习得到。</p>
 
-  <div class="archive">
+      
+    </div>
+    <footer>
+      
+        
+      
+      <div class="clearfix"></div>
+	  
+<div class="pagepart clearfix">
+  
+    <a href="/2014/03/23/languagemodel1/" class="alignleft prev" title="统计语言模型">统计语言模型</a>
+  
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-20T11:45:37.000Z"><a href="/2014/03/20/机器学习资源/">3月 20 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/20/机器学习资源/">机器学习资源整理</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+</div>
+
+    </footer>
   </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xuh5156"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+
+</section>
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
