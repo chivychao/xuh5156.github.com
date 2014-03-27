@@ -65,7 +65,8 @@
       
         <p>python处理字符串的时候经常用到unicode编码，特别是处理中文的时候，如下图：</p>
 <p><img src="/img/py1.png" alt=""></p>
-<p>可以看出，u&quot;中国&quot;和u&quot;\u4e2d\u56fd&quot;是等价的，&quot;中国&quot;的unicode编码是\u4e2d\u56fd,其中\u是unicode编码的转义字符，类似\n,\r等。</p>
+<p>可以看出，u&quot;中国&quot;和u&quot;\u4e2d\u56fd&quot;是等价的，&quot;中国&quot;的unicode编码是\u4e2d\u56fd,其中\u是unicode编码的转义字符，类似\n,\r等。
+<a id="more"></a></p>
 <p>在实际处理时，会碰到字符串变样了，变成了&quot;\u4e2d\u56fd&quot;,而不是u&quot;\u4e2d\u56fd&quot;，这种情况在从web上抓数据的时候可能会经常遇到。下图是字符串&quot;\u4e2d\u56fd&quot;的情况，对比上图可以看出相应的差别。</p>
 <p><img src="/img/py2.png" alt=""></p>
 <p>可以看出s2是一个12个ASCII字符的字符串，与我们期望的&quot;中国&quot;相差甚远了，该如何得到我们想要的结果呢？</p>

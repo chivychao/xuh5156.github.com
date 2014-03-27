@@ -66,24 +66,16 @@
       
         <p>python处理字符串的时候经常用到unicode编码，特别是处理中文的时候，如下图：</p>
 <p><img src="/img/py1.png" alt=""></p>
-<p>可以看出，u&quot;中国&quot;和u&quot;\u4e2d\u56fd&quot;是等价的，&quot;中国&quot;的unicode编码是\u4e2d\u56fd,其中\u是unicode编码的转义字符，类似\n,\r等。</p>
-<p>在实际处理时，会碰到字符串变样了，变成了&quot;\u4e2d\u56fd&quot;,而不是u&quot;\u4e2d\u56fd&quot;，这种情况在从web上抓数据的时候可能会经常遇到。下图是字符串&quot;\u4e2d\u56fd&quot;的情况，对比上图可以看出相应的差别。</p>
-<p><img src="/img/py2.png" alt=""></p>
-<p>可以看出s2是一个12个ASCII字符的字符串，与我们期望的&quot;中国&quot;相差甚远了，该如何得到我们想要的结果呢？</p>
-<p><strong>方法一 利用eval函数</strong></p>
-<p>很容易想到将字符串转成unicode，但是ASCII转换成unicode会保持不变，这个方法不行。</p>
-<p>比较&quot;\u4e2d\u56fd&quot; 和 u&quot;\u4e2d\u56fd&quot;，前者只比后者少了u，那么&quot;u&quot;+&quot;\u4e2d\u56fd&quot;,不行，变成了&quot;u\u4e2d\u56fd&quot;。</p>
-<p>这时可能会想到eval函数，将字符串当作python表达式来执行，那么eval(&quot;u\&quot;&quot; + s2 + &quot;\&quot;&quot;)就变成了u&quot;\u4e2d\u56fd&quot;，搞定。
-其实&quot;u\&quot;&quot; + s2 + &quot;\&quot;&quot; = &quot;u\&quot;\u4e2d\u56fd\&quot;&quot;，eval函数将里面的字符串当成表达式执行，那么表达式就是u&quot;\u4e2d\u56fd&quot;了。</p>
-<p><strong>方法二(推荐)</strong></p>
-<p>   python还有更为专业的方法来解决unicode转义字符问题，那就是unicode-escape编码。</p>
-<p>   s = s2.decode(&quot;unicode-escape&quot;)</p>
-<p>   就可以了</p>
+<p>可以看出，u&quot;中国&quot;和u&quot;\u4e2d\u56fd&quot;是等价的，&quot;中国&quot;的unicode编码是\u4e2d\u56fd,其中\u是unicode编码的转义字符，类似\n,\r等。
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2014/03/27/python_unicode/#more" class="more-link">阅读全文</a>
+          </div>
         
         
       
