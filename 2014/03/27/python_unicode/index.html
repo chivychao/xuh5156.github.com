@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档：2014 | Xuh5156</title>
+  <title>Python unicode转义字符\u的处理 | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="Python unicode转义字符\u的处理"/>
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -47,73 +47,78 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">2014</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-03-27T13:19:55.000Z"><a href="/2014/03/27/python_unicode/">3月 27 2014</a></time>
+      
+      
+  
+    <h1 class="title">Python unicode转义字符\u的处理</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <p>python处理字符串的时候经常用到unicode编码，特别是处理中文的时候，如下图：</p>
+<p><img src="/img/py1.png" alt=""></p>
+<p>可以看出，u&quot;中国&quot;和u&quot;\u4e2d\u56fd&quot;是等价的，&quot;中国&quot;的unicode编码是\u4e2d\u56fd,其中\u是unicode编码的转义字符，类似\n,\r等。</p>
+<p>在实际处理时，会碰到字符串变样了，变成了&quot;\u4e2d\u56fd&quot;,而不是u&quot;\u4e2d\u56fd&quot;，这种情况在从web上抓数据的时候可能会经常遇到。下图是字符串&quot;\u4e2d\u56fd&quot;的情况，对比上图可以看出相应的差别。</p>
+<p><img src="/img/py2.png" alt=""></p>
+<p>可以看出s2是一个12个ASCII字符的字符串，与我们期望的&quot;中国&quot;相差甚远了，该如何得到我们想要的结果呢？</p>
+<p><strong>方法一 利用eval函数</strong></p>
+<p>很容易想到将字符串转成unicode，但是ASCII转换成unicode会保持不变，这个方法不行。</p>
+<p>比较&quot;\u4e2d\u56fd&quot; 和 u&quot;\u4e2d\u56fd&quot;，前者只比后者少了u，那么&quot;u&quot;+&quot;\u4e2d\u56fd&quot;,不行，变成了&quot;u\u4e2d\u56fd&quot;。</p>
+<p>这时可能会想到eval函数，将字符串当作python表达式来执行，那么eval(&quot;u\&quot;&quot; + s2 + &quot;\&quot;&quot;)就变成了u&quot;\u4e2d\u56fd&quot;，搞定。
+其实&quot;u\&quot;&quot; + s2 + &quot;\&quot;&quot; = &quot;u\&quot;\u4e2d\u56fd\&quot;&quot;，eval函数将里面的字符串当成表达式执行，那么表达式就是u&quot;\u4e2d\u56fd&quot;了。</p>
+<p><strong>方法二(推荐)</strong></p>
+<p>   python还有更为专业的方法来解决unicode转义字符问题，那就是unicode-escape编码。</p>
+<p>   s = s2.decode(&quot;unicode-escape&quot;)</p>
+<p>   就可以了</p>
 
-  <div class="archive">
+      
+    </div>
+    <footer>
+      
+        
+      
+      <div class="clearfix"></div>
+	  
+<div class="pagepart clearfix">
+  
+    <a href="/2014/03/25/languagemodel2/" class="alignleft prev" title="统计语言模型(二)">统计语言模型(二)</a>
+  
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-27T13:19:55.000Z"><a href="/2014/03/27/python_unicode/">3月 27 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/27/python_unicode/">Python unicode转义字符\u的处理</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-25T13:49:02.000Z"><a href="/2014/03/25/languagemodel2/">3月 25 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/25/languagemodel2/">统计语言模型(二)</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-23T12:23:21.000Z"><a href="/2014/03/23/languagemodel1/">3月 23 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/23/languagemodel1/">统计语言模型</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-20T11:45:37.000Z"><a href="/2014/03/20/机器学习资源/">3月 20 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/20/机器学习资源/">机器学习资源整理</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2014-03-18T13:49:41.000Z"><a href="/2014/03/18/hello-world/">3月 18 2014</a></time>
-            
-              <h1 class="title"><a href="/2014/03/18/hello-world/">Hello World</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+</div>
+
+    </footer>
   </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xuh5156"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+
+</section>
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
