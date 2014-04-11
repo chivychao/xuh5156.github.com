@@ -85,6 +85,19 @@
 <p>同理对于N-gram:</p>
 <p><img src="/img/iterpn.jpg" alt=""></p>
 <p>其中λ可以通过EM算法在Held-out数据集上估计学习得到。</p>
+<h3 id="-3-katz-back-off-"><strong>3 Katz回退(Back-off)</strong></h3>
+<p>回退算法的思想是如果高阶的语言模型概率为0，那么回退到低阶，用低阶的概率来计算高阶的概率，是实际最常用的方法，常见的ARPA格式的语言模型，（概率  词语  回退概率），就是采用回退的表示。
+Katz回退算法的公式如下：</p>
+<p><img src="/img/katz.jpg" alt=""></p>
+<p>其中dr是折扣因子，即将出现的高阶语言模型的概率打折，是剩下的部分分配给经过的回退的语言模型上，保证总概率为1.dr是经过Good-Turing算法计算得到，</p>
+<p><img src="/img/katz_dr.jpg" alt=""> 。</p>
+<p>α是回退系数，保证最终的概率总和为0。</p>
+<p><img src="/img/katz2.jpg" alt=""></p>
+<p>于是α的值为</p>
+<p><img src="/img/katza.jpg" alt=""></p>
+<p><strong>参考</strong>
+有关语言模型的平滑算法， <a href="http://acl.ldc.upenn.edu/P/P96/P96-1041.pdf" target="_blank">《An Empirical Study of Smoothing Techniques for Language Modeling》</a>这篇论文介绍的很详细，可以参考。</p>
+<p>上一篇 <a href="/2014/03/23/languagemodel1/">统计语言模型</a></p>
 
       
     </div>
