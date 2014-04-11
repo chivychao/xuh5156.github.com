@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | Xuh5156</title>
+  <title>map 和 unordered_map以char * 为key | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Hello World"/>
+  <meta property="og:title" content="map 和 unordered_map以char * 为key"/>
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -53,19 +53,82 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2014-03-18T13:49:41.000Z"><a href="/2014/03/18/hello-world/">3月 18 2014</a></time>
+        <time datetime="2014-04-11T14:01:45.000Z"><a href="/2014/04/11/maphashmap/">4月 11 2014</a></time>
       
       
   
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">map 和 unordered_map以char * 为key</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>欢迎来到这里，这是在github上第一篇博客。</p>
-<p>之前的博客地址在<a href="http://blog.csdn.net/xuh5156" target="_blank">CSDN</a>上,现在搬到这里来，以后会陆续的更新下去。</p>
-<p>我还是太懒，哎，洗洗睡了。</p>
+        <p>使用stl map或者unordered_map进行字符串查找一般都是用std::string类型作为key，但是std：：string的效率实在太低，不得不进行优化，尝试使用char*作key来查找。</p>
+<h3 id="-map-char-key">一、map以char*为key</h3>
+<p>默认的map<char *,int>的key是指针，比较的是指针值的大小，不能进行字符串的匹配。查看map的模板定义：（<a href="http://www.cplusplus.com/reference/map/map/?kw=map）" target="_blank">http://www.cplusplus.com/reference/map/map/?kw=map）</a></p>
+<p><pre><code>
+template &lt; class Key,                                     //map::key_type
+          class T,                                       //map::mapped_type
+          class Compare = less&lt; Key&gt;,                     // map::key_compare
+          class Alloc = allocator &lt; pair&lt; const Key,T&gt; &gt;    // map::allocator_type
+          > class map;
+</code></pre>
+因此我们可以编写字符串的比较类来实现map以char *为key，代码如下：</p>
+<p><pre><code>
+struct Cmp
+{
+    //重载运算符
+    bool operator()(const char <em> str1,constchar </em> str2)
+    {
+        return strcmp(str1,str2) &lt; 0;
+    }
+}；</p>
+<p>map&lt; char<em>,int,Cmp&gt; mapStr;
+</code></pre>
+在mapStr中插入char </em>就可以进行字符串的查找操作了；
+切记，如果是局部指针变量，可能会出现随机结果，因此建议使用char *ss = new char[N]，通过new来进行指针的空间申请。</p>
+<p>二、unordered_map以char *为key</p>
+<p>unordered_map是C++11中的hash表，因为hash_map已经存在，因此搞了个怪名字。
+unordered_map模板定义
+（<a href="http://www.cplusplus.com/reference/unordered_map/unordered_map/?kw=unordered_map）：" target="_blank">http://www.cplusplus.com/reference/unordered_map/unordered_map/?kw=unordered_map）：</a></p>
+<p><pre><code>
+template &lt; class Key,                                    // unordered_map::key_type
+           class T,                                      // unordered_map::mapped_type
+           class Hash = hash&lt; Key&gt;,                       // unordered_map::hasher
+           class Pred = equal_to<Key>,                   // unordered_map::key_equal
+           class Alloc = allocator&lt; pair&lt; const Key,T&gt; &gt;  // unordered_map::allocator_type
+           > class unordered_map;</p>
+<p></code></pre>
+unordered_map需要重新写hash函数和比较函数，代码如下：</p>
+<p><pre><code>
+//hash函数
+struct Hash_Func
+{
+    //BKDR hash algorithm，有关字符串hash函数，可以去找找资料看看
+    int operator()(PSA_CHAR <em> str)const
+    {
+        int seed = 131;//31  131 1313 13131131313 etc//
+        int hash = 0;
+        while(</em>str)
+        {
+            hash = (hash <em> seed) + (</em>str);
+            str ++;
+        }<br>        return hash &amp; (0x7FFFFFFF);
+    }
+};</p>
+<p>//比较函数
+struct Cmp
+{
+    bool operator()(const PSA_CHAR <em>str1,const PSA_CHAR </em> str2)const
+    {
+        return strcmp(str1,str2) == 0;
+    }
+};</p>
+<p>unordered_map&lt; char*,int, Hash_Func ,Cmp&gt; hashStr;
+</code></pre> 
+编译unordered_map是需要加上编译选项 –std=c++0x。</p>
+<p>重写hash函数和比较函数的目的应该是只有hash值相同并且字符串也相同才能判断两个字符串是一样的，如果只是hash值相同并不能判断字符串相同。</p>
+<p>切记：一定要注意局部指针变量的问题，使用new运算符对指针申请空间，在使用结束遍历map或者unordered_map释放空间。</p>
 
       
     </div>
@@ -77,8 +140,8 @@
 	  
 <div class="pagepart clearfix">
   
+    <a href="/2014/04/08/qingming2014/" class="alignleft prev" title="清明回家">清明回家</a>
   
-    <a href="/2014/03/20/机器学习资源/" class="alignright next" title="机器学习资源整理">机器学习资源整理</a>
     
 </div>
 
