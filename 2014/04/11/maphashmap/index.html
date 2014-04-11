@@ -63,7 +63,8 @@
     </header>
     <div class="entry">
       
-        <p>使用stl map或者unordered_map进行字符串查找一般都是用std::string类型作为key，但是std：：string的效率实在太低，不得不进行优化，尝试使用char*作key来查找。</p>
+        <p>使用stl map或者unordered_map进行字符串查找一般都是用std::string类型作为key，但是std：：string的效率实在太低，不得不进行优化，尝试使用char*作key来查找。
+&lt;!==more--&gt; </p>
 <h3 id="-map-char-key">一、map以char*为key</h3>
 <p>默认的map<char *,int>的key是指针，比较的是指针值的大小，不能进行字符串的匹配。查看map的模板定义：（<a href="http://www.cplusplus.com/reference/map/map/?kw=map）" target="_blank">http://www.cplusplus.com/reference/map/map/?kw=map）</a></p>
 <p><pre><code>
@@ -87,7 +88,7 @@ struct Cmp
 </code></pre>
 在mapStr中插入char </em>就可以进行字符串的查找操作了；
 切记，如果是局部指针变量，可能会出现随机结果，因此建议使用char *ss = new char[N]，通过new来进行指针的空间申请。</p>
-<p>二、unordered_map以char *为key</p>
+<h3 id="-unordered_map-char-key">二、unordered_map以char *为key</h3>
 <p>unordered_map是C++11中的hash表，因为hash_map已经存在，因此搞了个怪名字。
 unordered_map模板定义
 （<a href="http://www.cplusplus.com/reference/unordered_map/unordered_map/?kw=unordered_map）：" target="_blank">http://www.cplusplus.com/reference/unordered_map/unordered_map/?kw=unordered_map）：</a></p>
