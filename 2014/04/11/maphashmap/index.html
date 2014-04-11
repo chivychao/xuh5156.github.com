@@ -64,7 +64,7 @@
     <div class="entry">
       
         <p>使用stl map或者unordered_map进行字符串查找一般都是用std::string类型作为key，但是std：：string的效率实在太低，不得不进行优化，尝试使用char*作key来查找。
-&lt;!==more--&gt; </p>
+<a id="more"></a> </p>
 <h3 id="-map-char-key">一、map以char*为key</h3>
 <p>默认的map<char *,int>的key是指针，比较的是指针值的大小，不能进行字符串的匹配。查看map的模板定义：（<a href="http://www.cplusplus.com/reference/map/map/?kw=map）" target="_blank">http://www.cplusplus.com/reference/map/map/?kw=map）</a></p>
 <p><pre><code>
