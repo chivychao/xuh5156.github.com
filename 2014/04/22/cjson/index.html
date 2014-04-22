@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>cJSON介绍 | Xuh5156</title>
+  <meta name="author" content="Xu Hua">
+  
+  <meta name="description" content="xuh5156">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="cJSON介绍"/>
+  <meta property="og:site_name" content="Xuh5156"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Xuh5156" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Xuh5156</a></h1>
+  <h2><a href="/">Random Walking</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+      <li><a href="/todolist">ToDo</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-04-22T14:43:34.000Z"><a href="/2014/04/22/cjson/">4月 22 2014</a></time>
+      
+      
+  
+    <h1 class="title">cJSON介绍</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p>JSON(JavaScript Object Notation)是一种轻量级的数据交换格式，易于人阅读和编写，同时也易于机器解析和生成。有关JSON的知识，请参考<a href="http://www.json.org/json-zh.html" target="_blank">《介绍 JSON》</a>。</p>
+<p>cJSON是一个用C语言实现的Json处理程序，代码量不大，只有一个头文件cJSON.h和一个源文件cJSON.c,用起来比较方便。从<a href="http://sourceforge.net/projects/cjson/" target="_blank">sourceforge</a>上可以下载。
+<a id="more"></a></p>
+<p>在cJSON.h中定义了JSON的数据结构，如下：</p>
+<pre><code>typedef struct cJSON {
+    struct cJSON *next,*prev;    /* next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem */
+    struct cJSON *child;         /* An array or object item will have a child pointer pointing to a chain of the items in the array/object. */
+
+    int type;                    /* The type of the item, as above. */
+
+    char *valuestring;           /* The item&#39;s string, if type==cJSON_String */
+    int valueint;                /* The item&#39;s number, if type==cJSON_Number */
+    double valuedouble;          /* The item&#39;s number, if type==cJSON_Number */
+
+    char *string;                /* The item&#39;s name string, if this item is the child of, or is in the list of subitems of an object. */
+} cJSON;
+</code></pre><p>定义还是蛮清楚的，用链表存储方式存储JSON，type代表这个结构体的类型，包括数、字符串、数组、json对象等。如果代表的是实数，则valuedouble就存储了这个实数取值，如果是int型的，则取valueint，其他类似。
+type的值在cJSON.h中定义了相应的宏。
+    /<em> cJSON Types: </em>/</p>
+<pre><code>#define cJSON_False 0
+#define cJSON_True 1
+#define cJSON_NULL 2
+#define cJSON_Number 3
+#define cJSON_String 4
+#define cJSON_Array 5
+#define cJSON_Object 6
+</code></pre><p>cJSON.h中的函数定义也比较明白，看函数名和注释应该能明白函数的功能，下面列举了几个常用的函数：</p>
+<pre><code>extern cJSON *cJSON_Parse(const char *value);      /* Supply a block of JSON, and this returns a cJSON object you can interrogate. Call cJSON_Delete when finished. */
+extern char  *cJSON_Print(cJSON *item);            /* Render a cJSON entity to text for transfer/storage. Free the char* when finished. */
+extern char  *cJSON_PrintUnformatted(cJSON *item); /* Render a cJSON entity to text for transfer/storage without any formatting. Free the char* when finished. */
+extern void   cJSON_Delete(cJSON *c);              /* Delete a cJSON entity and all subentities. */
+
+/*下面的这些函数主要用来创建json*/
+extern cJSON *cJSON_CreateObject(void);
+
+/* Macros for creating things quickly. */
+#define cJSON_AddNullToObject(object,name)        cJSON_AddItemToObject(object, name, cJSON_CreateNull())
+#define cJSON_AddTrueToObject(object,name)        cJSON_AddItemToObject(object, name, cJSON_CreateTrue())
+#define cJSON_AddFalseToObject(object,name)        cJSON_AddItemToObject(object, name, cJSON_CreateFalse())
+#define cJSON_AddBoolToObject(object,name,b)    cJSON_AddItemToObject(object, name, cJSON_CreateBool(b))
+#define cJSON_AddNumberToObject(object,name,n)    cJSON_AddItemToObject(object, name, cJSON_CreateNumber(n))
+#define cJSON_AddStringToObject(object,name,s)    cJSON_AddItemToObject(object, name, cJSON_CreateString(s))
+</code></pre><p>下面是写了个测试程序，输出是</p>
+<pre><code>{
+    &quot;student&quot;:    {
+        &quot;name&quot;:    &quot;Jack&quot;,
+        &quot;sex&quot;:    &quot;male&quot;,
+        &quot;age&quot;:    20,
+        &quot;score&quot;:    {
+            &quot;Chinese&quot;:    90,
+            &quot;English&quot;:    85.500000
+        }
+    }
+}
+</code></pre><p>程序代码很简单，按照自己需要的json格式来添加相应的内容即可。</p>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &quot;cJSON.h&quot;
+cJSON * create_json()
+{
+    cJSON * json = 0;
+    cJSON * json_student = 0;
+    cJSON * json_score = 0;
+    //创建json的根节点
+    json = cJSON_CreateObject();                        
+    //创建json子节点json_student
+    json_student = cJSON_CreateObject();
+    cJSON_AddStringToObject(json_student,&quot;name&quot;,&quot;Jack&quot;);     //为json_student添加name属性，值为Jack
+    cJSON_AddStringToObject(json_student,&quot;sex&quot;,&quot;male&quot;);      //为json_student添加sex属性，值为male
+    cJSON_AddNumberToObject(json_student,&quot;age&quot;,20);          //为json_student添加age属性，值为20
+    //创建json_student的子节点json_score
+    json_score = cJSON_CreateObject();
+    cJSON_AddNumberToObject(json_score,&quot;Chinese&quot;,90.0);      //为json_score添加Chinese属性，值为90
+    cJSON_AddNumberToObject(json_score,&quot;English&quot;,85.5);      //为json_score添加English属性，值为85.5
+
+    cJSON_AddItemToObject(json_student,&quot;score&quot;,json_score);  //json_student添加子节点json_score,键为score
+    cJSON_AddItemToObject(json,&quot;student&quot;,json_student);      //json添加子节点json_student,键为student
+    return json;
+}
+int main(int argc,char ** argv)
+{
+    //创建json
+    cJSON * json = create_json();
+    //打印json
+    char * str_json = cJSON_Print(json);
+    printf(&quot;%s\n&quot;,str_json);
+
+    //释放json
+    cJSON_Delete(json);
+    free(str_json);
+    return 0;
+}
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+      
+      <div class="clearfix"></div>
+	  
+<div class="pagepart clearfix">
+  
+    <a href="/2014/04/11/maphashmap/" class="alignleft prev" title="map 和 unordered_map以char * 为key">map 和 unordered_map以char * 为key</a>
+  
+    
+</div>
+
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xuh5156"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:xuh5156.github.io/">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/C/C++/">C/C++</a><small>2</small></li>
+  
+    <li><a href="/categories/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/categories/机器学习/">机器学习</a><small>1</small></li>
+  
+    <li><a href="/categories/自然语言处理/">自然语言处理</a><small>2</small></li>
+  
+    <li><a href="/categories/随笔/">随笔</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/C/C++/" style="font-size: 20.00px;">C/C++</a><a href="/tags/JSON/" style="font-size: 10.00px;">JSON</a><a href="/tags/N-gram/" style="font-size: 20.00px;">N-gram</a><a href="/tags/STL/" style="font-size: 10.00px;">STL</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/机器学习/" style="font-size: 10.00px;">机器学习</a><a href="/tags/清明节 回家/" style="font-size: 10.00px;">清明节 回家</a><a href="/tags/自然语言处理/" style="font-size: 20.00px;">自然语言处理</a><a href="/tags/语言模型/" style="font-size: 20.00px;">语言模型</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">友情链接</h3>
+<ul class="entry">
+<li><a href="http://blog.csdn.net/xuh5156" title="Xuh5156">Xuh5156</a></li>
+<li><a href="http://www.52nlp.cn/" title="52NLP">52NLP</a></li>
+<li><a href="http://zipperary.com/" title="zipperary">zipperary's blog</a></li>
+</ul>
+</div>
+
+  <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=1179720571&verifier=ac70f406&dpc=1"></iframe>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Xu Hua
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fda8070e36a1616ab04ea7ae3d76db182' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</body>
+</html>
