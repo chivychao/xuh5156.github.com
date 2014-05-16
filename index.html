@@ -65,54 +65,16 @@
     <div class="entry">
       
         <h1 id="-scons">第一章    编译和安装scons</h1>
-<p>本章将带你进行一下基础操作，在你的系统上安装scons以及编译scons。在这之前，本章将会先介绍下有关安装python的步骤。幸运的是，python和scons在几乎所有系统上的安装都很简单，并且python在许多系统上都会预先安装。</p>
-<h2 id="1-1-python">1.1 安装Python</h2>
-<p>因为scons是用python编写的，因此在用scons时，你的系统上必须安装了python。在你试图安装python之前，你应该先检查下你的系统上是否已经安装了python。在你系统的命令行提示符中输入python –V 或者python –version。</p>
-<pre><code>$ python –V
-Python 2.5.1
-</code></pre><p>在window系统下：</p>
-<pre><code>C:\&gt;python –V
-Python 2.5.1
-</code></pre><p>如果你的系统上没有安装python，你会看到一些错误信息，诸如“command not found”(Unix或linux系统)，或者“python&#39; is not recognized as an internal or external command, operable progam or batch file”（windows）。在这种情况下，在安装scons之前必须先安装python。</p>
-<p>有关下载和安装python的网址是<a href="http://www.python.org/download/" target="_blank"><a href="http://www.python.org/download/">http://www.python.org/download/</a></a>，参考怎么样下载和安装python。</p>
-<p>Scons支持2.4以上的2.x版本的python，3.0或者更高版本的暂不支持。如果你需要安装python，建议你安装最新版本的2.x的python。新的python可以明显的加速scons的性能。</p>
-<h2 id="1-2-scons">1.2 从预编译包安装scons</h2>
-<p>Scons在许多系统下有安装包，包括Linux和windows。你不需要阅读本节的全部内容，只需阅读有关你使用的系统的那部分就可以。</p>
-<h3 id="1-2-1-red-hat-rpm-based-linux-scons">1.2.1 在Red Hat (和其他RPM-based) Linux 系统上安装scons</h3>
-<p>如果你的系统支持yum安装，你可以通过如下命令安装scons：</p>
-<pre><code># yum install scons
-</code></pre><p>你也可以下载有scons工程提供的RPM包，安装scons脚本到/usr/bin，安装scons库文件到 /usr/lib/scons。</p>
-<p>下载合适的.rpm文件，在命令行里安装：</p>
-<pre><code># rpm -Uvh scons-2.3.1-1.noarch.rpm 
-</code></pre><h3 id="1-2-2-debian-linux-scons">1.2.2 在Debian Linux系统上安装scons</h3>
-<p>如果你的系统连接网络，你可以通过下列命令来安装Debian包：</p>
-<pre><code># apt-get install scons
-</code></pre><h3 id="1-2-3-windows-scons">1.2.3 在Windows系统上安装scons</h3>
-<p>Scons提供windows安装包，使得安装过程及其简单。从scons下载页面<a href="http://www.scons.org/download.php" target="_blank"><a href="http://www.scons.org/download.php">http://www.scons.org/download.php</a></a>下载scons-2.3.1.win32.exe，然后运行这个文件。</p>
-<h2 id="1-3-scons">1.3 在任意系统上编译安装scons</h2>
-<p>如果你的系统没有预编译好的scons包，使用python distutils包仍然可以很简单的编译和安装scons。
-第一步，从scons下载页面<a href="http://www.scons.org/download.html" target="_blank"><a href="http://www.scons.org/download.html">http://www.scons.org/download.html</a></a>上，下载scons-2.3.1.tar.gz 或者scons-2.3.1.zip。
-解压缩，然后运行：</p>
-<pre><code># cd scons-2.3.1
-# python setup.py install
-</code></pre><h3 id="1-3-1-scons">1.3.1 编译安装多版本scons</h3>
-<p>为了在指定版本的位置安装scons，可以在运行setup.py时加上--version-lib选项。</p>
-<pre><code># python setup.py install --version-lib 
-</code></pre><p>这样可以将scons安装在/usr/lib/scons-2.3.1或者C:\Python25\scons-2.3.1目录下。</p>
-<h3 id="1-3-2-scons">1.3.2 在其他位置安装scons</h3>
-<p>通过指定—prefix选项可以将scons安装在非默认位置。</p>
-<pre><code># python setup.py install --prefix=/opt/scons
-</code></pre><p>这样将scons安装在/opt/scons/bin下，编译库在/opt/scons/lib。
-注意，你可以同时指定—prefix和—version-lib选项，这样可以将scons安装在指定目录下的版本号目录中，如/opt/scons/lib/scons-2.3.1。</p>
-<h3 id="1-3-3-scons">1.3.3 没有管理员权限下安装scons</h3>
-<p>如果你没有管理员权限可以将scons安装在系统目录下，那么可以通过—prefix选项来选择安装目录。如安装在用户$Home目录下，可执行脚本安装在$Home/bin，库文件在$Home/lib/scons下。</p>
-<pre><code>$ python setup.py install --prefix=$HOME
-</code></pre><p>同样，你可以同时指定—version-lib选项。</p>
+<p>本章将带你进行一下基础操作，在你的系统上安装scons以及编译scons。在这之前，本章将会先介绍下有关安装python的步骤。幸运的是，python和scons在几乎所有系统上的安装都很简单，并且python在许多系统上都会预先安装。
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2014/05/16/scons1/#more" class="more-link">阅读全文</a>
+          </div>
         
         
       
