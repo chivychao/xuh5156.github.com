@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>清明回家 | Xuh5156</title>
+  <title>scons用户指南 | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="清明回家"/>
+  <meta property="og:title" content="scons用户指南"/>
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -53,21 +53,60 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2014-04-08T12:05:52.000Z"><a href="/2014/04/08/qingming2014/">4月 8 2014</a></time>
+        <time datetime="2014-05-16T13:46:35.000Z"><a href="/2014/05/16/scons1/">5月 16 2014</a></time>
       
       
   
-    <h1 class="title">清明回家</h1>
+    <h1 class="title">scons用户指南</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>清明假期三天就这么一下就过去了，坐在火车站里，等着火车，想了些事情，眼里隐隐要留下泪水。
-<a id="more"></a></p>
-<p>这几天，陪着媳妇去医院做了检查，回家做饭给媳妇吃，惬意的晒着太阳，虽然有点无聊，可也没有人群的喧嚣，饭菜都是家里自己种的纯绿色食品，我做的不好吃，媳妇也一直夸我。媳妇有喜了，这是最大的喜事，可我却不能陪她，两地分居的生活实在不易，在一起的日子那么少而珍贵，胜似新婚，可要分别时媳妇眼里留下泪水，我也是硬忍着泪，不负责任的劝着媳妇，依依不舍的离去，可真正坐上车时，还是留下了眼泪。媳妇，对不起，从恋爱到结婚，这么多年，我都没有好好陪你，从失职的男友到失职的丈夫，你去一直不离不弃，我爱你。以后要好好规划下咱俩的生活，为了咱俩，为了孩子。妻子，孩子，房子，车子，或许有些俗，确是实实在在的人生目标。</p>
-<p>在家的日子总是短暂，春天的阳光晒着有点慵懒，树上发着嫩牙，家里院子里栽了不少的树，木瓜，白果，梨花已经落了一地。后院的菜园里各种蔬菜随吃随采，大葱，菠菜，……有点丢脸，农家的孩子却认不得几种蔬菜。田地里，绿色的麦苗映衬着黄土，杨树上也有了绿色，鸟儿从早开始叫着，好久没有看到这样的画面。可是这种看似美好的景象后面隐藏着啥呢？贫穷。清明时节，并没有出现雨纷纷的天气，干旱的天气让春种一直延期，粮食不值钱，种粮食赚不到实惠，甚至觉得人工去浇灌土地都是浪费，只能期待老天的施舍，焦急的等待。七十多岁的大爷爷，为了种花生买了些农药化肥，总共三百多块钱，没钱给，先赊着，这一幕让我有些心酸，辛苦的老农连化肥钱都付不起了。和老爸的聊天，了解了一些情况，土地可以流转，八十元每亩一年，流转了不如自己种着，可种着也只能赚些口粮，连农药化肥钱都挣不回来。国家的政策天天宣传的很好，可这或许只是一些真实的一暼。</p>
-<p>假期匆匆过去，临走的心情却有些沉重，写下这些聊做记事。火车快来了，收拾行李，泪奔… </p>
+        <h1 id="-scons">第一章    编译和安装scons</h1>
+<p>本章将带你进行一下基础操作，在你的系统上安装scons以及编译scons。在这之前，本章将会先介绍下有关安装python的步骤。幸运的是，python和scons在几乎所有系统上的安装都很简单，并且python在许多系统上都会预先安装。</p>
+<h2 id="1-1-python">1.1 安装Python</h2>
+<p>因为scons是用python编写的，因此在用scons时，你的系统上必须安装了python。在你试图安装python之前，你应该先检查下你的系统上是否已经安装了python。在你系统的命令行提示符中输入python –V 或者python –version。</p>
+<pre><code>$ python –V
+Python 2.5.1
+</code></pre><p>在window系统下：</p>
+<pre><code>C:\&gt;python –V
+Python 2.5.1
+</code></pre><p>如果你的系统上没有安装python，你会看到一些错误信息，诸如“command not found”(Unix或linux系统)，或者“python&#39; is not recognized as an internal or external command, operable progam or batch file”（windows）。在这种情况下，在安装scons之前必须先安装python。</p>
+<p>有关下载和安装python的网址是<a href="http://www.python.org/download/，参考怎么样下载和安装python。" target="_blank">http://www.python.org/download/，参考怎么样下载和安装python。</a></p>
+<p>Scons支持2.4以上的2.x版本的python，3.0或者更高版本的暂不支持。如果你需要安装python，建议你安装最新版本的2.x的python。新的python可以明显的加速scons的性能。</p>
+<h2 id="1-2-scons">1.2 从预编译包安装scons</h2>
+<p>Scons在许多系统下有安装包，包括Linux和windows。你不需要阅读本节的全部内容，只需阅读有关你使用的系统的那部分就可以。</p>
+<h3 id="1-2-1-red-hat-rpm-based-linux-scons">1.2.1 在Red Hat (和其他RPM-based) Linux 系统上安装scons</h3>
+<p>如果你的系统支持yum安装，你可以通过如下命令安装scons：</p>
+<pre><code># yum install scons
+</code></pre><p>你也可以下载有scons工程提供的RPM包，安装scons脚本到/usr/bin，安装scons库文件到 /usr/lib/scons。</p>
+<p>下载合适的.rpm文件，在命令行里安装：</p>
+<pre><code># rpm -Uvh scons-2.3.1-1.noarch.rpm 
+</code></pre><h3 id="1-2-2-debian-linux-scons">1.2.2 在Debian Linux系统上安装scons</h3>
+<p>如果你的系统连接网络，你可以通过下列命令来安装Debian包：</p>
+<pre><code># apt-get install scons
+</code></pre><h3 id="1-2-3-windows-scons">1.2.3 在Windows系统上安装scons</h3>
+<p>Scons提供windows安装包，使得安装过程及其简单。从scons下载页面<a href="http://www.scons.org/download.php下载scons-2.3.1.win32.exe，然后运行这个文件。" target="_blank">http://www.scons.org/download.php下载scons-2.3.1.win32.exe，然后运行这个文件。</a></p>
+<h2 id="1-3-scons">1.3 在任意系统上编译安装scons</h2>
+<p>如果你的系统没有预编译好的scons包，使用python distutils包仍然可以很简单的编译和安装scons。
+第一步，从scons下载页面<a href="http://www.scons.org/download.html上，下载scons-2.3.1.tar.gz" target="_blank">http://www.scons.org/download.html上，下载scons-2.3.1.tar.gz</a> 或者scons-2.3.1.zip。
+解压缩，然后运行：</p>
+<pre><code># cd scons-2.3.1
+# python setup.py install
+</code></pre><h3 id="1-3-1-scons">1.3.1 编译安装多版本scons</h3>
+<p>为了在指定版本的位置安装scons，可以在运行setup.py时加上--version-lib选项。</p>
+<pre><code># python setup.py install --version-lib 
+</code></pre><p>这样可以将scons安装在/usr/lib/scons-2.3.1或者C:\Python25\scons-2.3.1目录下。</p>
+<h3 id="1-3-2-scons">1.3.2 在其他位置安装scons</h3>
+<p>通过指定—prefix选项可以将scons安装在非默认位置。</p>
+<pre><code># python setup.py install --prefix=/opt/scons
+</code></pre><p>这样将scons安装在/opt/scons/bin下，编译库在/opt/scons/lib。
+注意，你可以同时指定—prefix和—version-lib选项，这样可以将scons安装在指定目录下的版本号目录中，如/opt/scons/lib/scons-2.3.1。</p>
+<h3 id="1-3-3-scons">1.3.3 没有管理员权限下安装scons</h3>
+<p>如果你没有管理员权限可以将scons安装在系统目录下，那么可以通过—prefix选项来选择安装目录。如安装在用户$Home目录下，可执行脚本安装在$Home/bin，库文件在$Home/lib/scons下。</p>
+<pre><code>$ python setup.py install --prefix=$HOME
+</code></pre><p>同样，你可以同时指定—version-lib选项。</p>
 
       
     </div>
@@ -79,10 +118,8 @@
 	  
 <div class="pagepart clearfix">
   
-    <a href="/2014/03/27/python_unicode/" class="alignleft prev" title="Python unicode转义字符\u的处理">Python unicode转义字符\u的处理</a>
+    <a href="/2014/04/22/cjson/" class="alignleft prev" title="cJSON介绍">cJSON介绍</a>
   
-  
-    <a href="/2014/04/11/maphashmap/" class="alignright next" title="map 和 unordered_map以char * 为key">map 和 unordered_map以char * 为key</a>
     
 </div>
 
