@@ -124,9 +124,9 @@ Twisted：
             python ./setup.py install
 </code></pre><p><strong>验证</strong>
 <img src="/img/lxml.png" alt=""></p>
-<p>错误是lxml需要libxml2.so.2，这个库在编译时是安装在我们制定的目录/home/username/tools/libxml2/lib下，没有放在系统的lib文件夹下，所以找不到。
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/username/tools/libxml2/lib</p>
-<p>参考<a href="http://www.coder4.com/archives/3660" target="_blank"><a href="http://www.coder4.com/archives/3660">http://www.coder4.com/archives/3660</a></a></p>
+<p>错误是lxml需要libxml2.so.2，这个库在编译时是安装在我们制定的目录/home/username/tools/libxml2/lib下，没有放在系统的lib文件夹下，所以找不到。</p>
+<pre><code>    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/username/tools/libxml2/lib
+</code></pre><p>参考<a href="http://www.coder4.com/archives/3660" target="_blank"><a href="http://www.coder4.com/archives/3660">http://www.coder4.com/archives/3660</a></a></p>
 <h3 id="5-six-w3lib-cssselect-queuelib">5 安装 six w3lib cssselect queuelib</h3>
 <p><strong>下载</strong></p>
 <p>six ：<a href="https://pypi.python.org/pypi/six" target="_blank"><a href="https://pypi.python.org/pypi/six">https://pypi.python.org/pypi/six</a></a></p>
