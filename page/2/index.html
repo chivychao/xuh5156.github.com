@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>统计语言模型(二) | Xuh5156</title>
+  <title>第 2 页 | Xuh5156</title>
   <meta name="author" content="Xu Hua">
   
   <meta name="description" content="xuh5156">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="统计语言模型(二)"/>
+  
   <meta property="og:site_name" content="Xuh5156"/>
 
   
@@ -47,72 +47,40 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
   
   <div class="post-content">
     <header>
       
         <div class="icon"></div>
-        <time datetime="2014-03-25T13:49:02.000Z"><a href="/2014/03/25/languagemodel2/">3月 25 2014</a></time>
+        <time datetime="2014-03-18T13:49:41.000Z"><a href="/2014/03/18/hello-world/">3月 18 2014</a></time>
       
       
   
-    <h1 class="title">统计语言模型(二)</h1>
+    <h1 class="title"><a href="/2014/03/18/hello-world/">Hello World</a></h1>
   
 
     </header>
     <div class="entry">
       
-        <h2 id="4-">4. 语言模型平滑算法</h2>
-<p>由于训练语料的有限，大量的N-gram词语在训练语料中没有出现，而前文提到N-gram的训练一般采用最大似然估计的方法，这就导致了零概率问题。同时最大似然估计对于小频率词语的估计也很糟糕。这就是语言模型的<strong>数据稀疏</strong>问题。</p>
-<p>为了解决数据稀疏问题，提出了一系列的平滑算法，基本思想是降低已出现N-gram条件概率分布，以使未出现的N-gram条件概率分布非零，且经数据平滑后保证概率和为1。
-<a id="more"></a></p>
-<h3 id="-1-laplace-"><strong>1. Laplace平滑</strong></h3>
-<p>Laplace平滑算法也称为<strong>Add-one平滑</strong>，是最简单的平滑算法。其基本思想是，在每个N-gram的次数上加上1，保证每个N-gram至少出现1次。</p>
-<p><img src="/img/addone.jpg" alt=""></p>
-<p>  Ci是词语的个数，Nall是训练语料中所有词数，V是词典中词语总数。</p>
-<h3 id="-2-good-turing-"><strong>2 Good-Turing平滑</strong></h3>
-<p><strong>Good-Turing</strong>平滑是通过折扣出现c+1次的所有N-gram的个数到出现c次的N-gram的个数来实现平滑。Nc是所有出现c次的所有N-gram的个数。</p>
-<p><img src="/img/goodturing.jpg" alt=""></p>
-<h3 id="-3-interpolation-"><strong>3 Interpolation平滑(插值平滑)</strong></h3>
-<p>Laplace平滑和Good-Turing平滑算法对于训练语料中没有出现的N-gram都一视同仁，概率相等，这显然不太合理。比如：</p>
-<blockquote>
-<p>假设 C(be happy) = C(be zzz) = 0, 很明显感觉be happy出现的概率应该要比be zzz大一些。</p>
-</blockquote>
-<p>为此提出了<strong>线性插值平滑算法</strong>，也称为<strong>Jelinek-Mercer smoothing</strong>，其基本思想是将高阶模型和低阶模型作线性组合，利用低元N-gram模型对高元N-gram模型进行线性插值。因为在没有足够的数据对高元n-gram模型进行概率估计时，低元n-gram模型通常可以提供有用的信息。</p>
-<p>对于bigram，其公式如下：</p>
-<p><img src="/img/iterp2.jpg" alt=""></p>
-<p>同理对于N-gram:</p>
-<p><img src="/img/iterpn.jpg" alt=""></p>
-<p>其中λ可以通过EM算法在Held-out数据集上估计学习得到。</p>
-<h3 id="-4-katz-back-off-"><strong>4 Katz回退(Back-off)</strong></h3>
-<p>回退算法的思想是如果高阶的语言模型概率为0，那么回退到低阶，用低阶的概率来计算高阶的概率，是实际最常用的方法，常见的ARPA格式的语言模型，（概率  词语  回退概率），就是采用回退的表示。
-Katz回退算法的公式如下：</p>
-<p><img src="/img/katz.jpg" alt=""></p>
-<p>其中dr是折扣因子，即将出现的高阶语言模型的概率打折，是剩下的部分分配给经过的回退的语言模型上，保证总概率为1.dr是经过Good-Turing算法计算得到，</p>
-<p><img src="/img/katz_dr.jpg" alt=""> 。</p>
-<p>α是回退系数，保证最终的概率总和为0。</p>
-<p><img src="/img/katz2.jpg" alt=""></p>
-<p>于是α的值为</p>
-<p><img src="/img/katza.jpg" alt=""></p>
-<p><strong>参考</strong></p>
-<p>有关语言模型的平滑算法， <a href="http://www.speech.sri.com/projects/srilm/manpages/pdfs/chen-goodman-tr-10-98.pdf" target="_blank">《An Empirical Study of Smoothing Techniques for Language Modeling》</a>这篇论文介绍的很详细，可以参考。</p>
-<p>上一篇 <a href="/2014/03/23/languagemodel1/">统计语言模型</a></p>
+        <p>欢迎来到这里，这是在github上第一篇博客。</p>
+<p>之前的博客地址在<a href="http://blog.csdn.net/xuh5156" target="_blank">CSDN</a>上,现在搬到这里来，以后会陆续的更新下去。</p>
+<p>我还是太懒，哎，洗洗睡了。</p>
 
       
     </div>
     <footer>
       
         
+        
       
       <div class="clearfix"></div>
 	  
 <div class="pagepart clearfix">
   
-    <a href="/2014/03/23/languagemodel1/" class="alignleft prev" title="统计语言模型">统计语言模型</a>
   
-  
-    <a href="/2014/03/27/python_unicode/" class="alignright next" title="Python unicode转义字符\u的处理">Python unicode转义字符\u的处理</a>
+    <a href="/" class="alignright next" title="undefined">undefined</a>
     
 </div>
 
@@ -121,27 +89,16 @@ Katz回退算法的公式如下：</p>
 </article>
 
 
-<section id="comment">
-  <h1 class="title">留言</h1>
 
-  <!-- Duoshuo Comment BEGIN -->
-	<div class="ds-thread"></div>
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"xuh5156"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = 'http://static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		|| document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-<!-- Duoshuo Comment END -->
 
-</section>
 
-</div></div>
+<nav id="pagination">
+  
+    <a href="/" class="alignleft prev">上一页</a>
+  
+  
+  <div class="clearfix"></div>
+</nav></div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">

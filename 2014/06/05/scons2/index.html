@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>scons用户指南(二) | Xuh5156</title>
+  <meta name="author" content="Xu Hua">
+  
+  <meta name="description" content="xuh5156">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="scons用户指南(二)"/>
+  <meta property="og:site_name" content="Xuh5156"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Xuh5156" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Xuh5156</a></h1>
+  <h2><a href="/">Random Walking</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+      <li><a href="/todolist">ToDo</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2014-06-05T14:32:18.000Z"><a href="/2014/06/05/scons2/">6月 5 2014</a></time>
+      
+      
+  
+    <h1 class="title">scons用户指南(二)</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h1 id="-">第二章 简单编译</h1>
+<p>本章你将会看到几个简单的利用SCons进行编译配置的例子，这些例子将描述利用Scons编译不同系统上的不同编程语言的程序是多么容易的事情。</p>
+<a id="more"></a>
+
+<h2 id="2-1-c-c-">2.1 C/C++程序简单编译</h2>
+<p>下面是C语言编写的著名的“Hello，World！”程序：</p>
+<pre><code>    int main()
+    {
+        printf(“Hello, world!\n”);
+    }
+</code></pre><p>这里给出了如何利用SCons来编译这个程序。在名为SConstruct的文件中输入：
+        Program(‘hello.c’)</p>
+<p>这个小小的配置文件告诉SCons两方面信息：你要编译什么（一个可执行程序），和你要编译的输入文件（hello.c）。Program是一个编译方法，Python调用这个方法告诉SCons你要编译一个可执行程序。</p>
+<p>就这些。现在运行scons命令来编译程序，在POSIX兼容系统上，如Linux或Unix，你会看到这些：</p>
+<pre><code>    %scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cc –o hello.o –c hello.c
+    cc –o hello hello.o
+    scons: done building targets.
+</code></pre><p>在Windows系统的Microsoft Visual C++编译器上，您将会看到：</p>
+<pre><code>    C:\&gt; scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cl  /Fohello.obj /c hello.c /nologo
+    link /nologo /OUT:hello.exe hello.obj
+    embedManifestExeCheck(target, source, env)
+    scons: done building targets.
+</code></pre><p>首先，注意您只需要指定源文件的名称即可，SCons会根据源文件名正确地推导出目标文件和可执行文件的名称。</p>
+<p>其次，注意在相同的SConstruct文件下，没有任何的改变，就可以在不同的系统中生成正确的输出文件名称：POSIX系统下的hello.o和hello，与Windows系统下的hello.obj和hello.exe。这是一个简单的例子，来说明利用Scons怎样使得编写可移植软件编译变的如此简单的。</p>
+<p>（注意，本手册将不会对每个例子都重复的给出POSIX系统和windows系统下的输出结果。一定要记住，除非有特殊规定，任何例子都应该同样适用于这两种系统。）</p>
+<h2 id="2-2-">2.2 编译目标文件</h2>
+<p>Program编译方法只是SCons提供的用来构件不同类型文件的众多编译方法之一。另外一个是Object方法，它告诉SCons从指定的源文件编译一个目标文件。</p>
+<pre><code>    Object(‘hello.c’)
+</code></pre><p>现在您运行scons命令来编译这个程序，它将在POSIX系统上生成hello.o文件：</p>
+<pre><code>    %scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cc –o hello.o –c hello.c
+    scons: done building targets.
+</code></pre><p>在windows系统下将生成hello.obj目标文件(利用Microsoft Visual C++编译器)：</p>
+<pre><code>    C:\&gt; scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cl  /Fohello.obj /c hello.c /nologo
+    scons: done building targets.
+</code></pre><h2 id="2-3-java-">2.3 Java程序简单编译</h2>
+<p>SCons也使得编译Java程序变得很容易。不像Program和Object方法，Java编译方法需要您指定存放class文件的目标目录的名称，在其后是存放.java文件的源目录：</p>
+<pre><code>    Java(‘classes’，‘src’)
+</code></pre><p>如果src目录下包含一个hello.java文件，运行scons的运行结果类似如下（POSIX系统）：</p>
+<pre><code>    % scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    javac –d classes –sourcepath src src/hello.java
+    scons: done building targets.
+</code></pre><p>第26章将会详细介绍编译java程序，包括构建.jar文件和其他类型的文件。</p>
+<h2 id="2-4-">2.4 编译后清除</h2>
+<p>当使用SCons，不需要添加特殊命令或者目标名称来清除编译后的文件。相反，在调用SCons时，简单的使用-c 或者--clean选项，SCons会删除适当的编译文件。因此，如果我们编译上述例子，然后调用scons –c，输出（POSIX）如下：</p>
+<pre><code>    %scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cc –o hello.o –c hello.c
+    cc –o hello hello.o
+    scons: done building targets.
+    %scons –c
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Cleaning targets …
+    Removed hello.o
+    Removed hello
+    scons: done cleaning targets.
+</code></pre><p>在windows下输出结果如下：</p>
+<pre><code>    C:\&gt; scons
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cl  /Fohello.obj /c hello.c /nologo
+    link /nologo /OUT:hello.exe hello.obj
+    embedManifestExeCheck(target, source, env)
+    scons: done building targets.
+    %scons –c
+    scons：Reading SConscript files …
+    scons: done reading SConscript files.
+    scons: Cleaning targets …
+    Removed hello.obj
+    Removed hello.exe
+    scons: done cleaning targets.
+</code></pre><p>注意，SCons改变输出信息来告诉您这是Cleaning targets …和 done cleaning targets.</p>
+<h2 id="2-5-sconstruct-">2.5 SConstruct文件</h2>
+<p>如果你曾经使用过类似于make 的编译系统，你会发现SConstruct之于Scons等同于makefile。SCons读入SConstruct文件来控制编译程序。</p>
+<h3 id="2-5-1-sconstruct-python-">2.5.1 SConstruct文件是Python脚本</h3>
+<p>SConstruct文件和makefile文件的一个重要的区别是：SConstruct文件实际上是一个Python脚本。如果你对Python还不熟悉，不用担心。本用户手册将一步步的介绍一部分相关的Python，使得您能高效的使用SCons。此外，Python真的很容易学。</p>
+<p>使用Python作为脚本语言的一个方面是您可以在SConstruct文件中使用Python注释。任何“#”和一行结尾之间的内容会被忽略：</p>
+<pre><code>    #Arrange to build the “hello” program.
+    Program(‘hello.c’)  # “hello.c” is the source file.
+</code></pre><p>在本指南的剩余部分，您将看到，使用脚本语言可以简化真实世界的复杂需求。</p>
+<h3 id="2-5-2-scons-">2.5.2 SCons函数是顺序无关的</h3>
+<p>重要的一点使得SConstruct文件并不完全像一个正常的Python脚本，而更像是Makefile，那就是SConstruct文件调用的SCons函数并不影响SCons在实际编译您需要的程序和目标文件的顺序。换句话说，当你调用Program方法（或者其他编译方法），您并没有告诉SCons在方法调用的瞬间就生成程序。相反，你只告诉SCons你想要编译的程序，例如，一个从hello.c文件编译的程序，由SCons决定在需要的时候编译这个程序（或其他文件）。（详情请见第6章。）</p>
+<p>SCons通过打印指示只是读SConstruct文件和实际进行程序编译的状态信息来反映调用一个如Program的编译方法和实际编译程序的区别。这样就明确了什么时候SCons执行SConstruct文件的Python语句，什么时候实际执行命令或其他操作来编译必要的文件。</p>
+<p>通过例子说明之。Python通过print语句把字符串输出到屏幕上。我们将print语句放在Program编译方法周围：</p>
+<pre><code>    print “Calling Pragram(‘hello.c’)”
+    Program(‘hello.c’)
+    print “Calling Pragram(‘goodbye.c’)”
+    Program(‘goodbye.c’)
+    print “Finish calling Program”
+</code></pre><p>然后我们执行SCons，将会看到读取SConstruct文件中print语句的输出信息，指示了什么时候执行python语句。</p>
+<pre><code>    %scons
+    scons： Reading SConscript files …
+    Calling Program(‘hello.c’)
+    Calling Program(‘goodbye.c’)
+    Finished calling Program()
+    scons: done reading SConscript files.
+    scons: Building targets …
+    cc –o goobye.o –c goodbye.c
+    cc –o goodbye goodbye.0
+    cc –o hello.o –c hello.c
+    cc –o hello hello.o
+    scons: done building targets
+</code></pre><p>也请注意，SCons首先编译goodbye程序，即使在读取SConstruct文件时的输出显示了先调用了SConstruct文件中的Program(‘hello.c’)。</p>
+<h2 id="2-6-scons-">2.6 让SCons输出更简洁</h2>
+<p>你已经看到了SCons怎样输出一些有关它在做什么的信息，这些信息围绕在实际编译软件的命令周围：
+        C:> scons
+        scons：Reading SConscript files …
+        scons: done reading SConscript files.
+        scons: Building targets …
+        cl  /Fohello.obj /c hello.c /nologo
+        link /nologo /OUT:hello.exe hello.obj
+        embedManifestExeCheck(target, source, env)
+        scons: done building targets.</p>
+<p>这些信息强调了SCons工作的顺序：读取和执行配置文件（一般指SConscript文件）的所有内容，然后只编译目标文件。另外的好处是，这些信息有助于区别读取配置文件时发生的错误和编译目标时的错误。</p>
+<p>一个缺陷是，这些信息使得输出杂乱无章。幸运的是，在调用SCOns时使用-Q选项可以简单的屏蔽这些信息。</p>
+<pre><code>    C:\&gt; scons –Q
+    cl  /Fohello.obj /c hello.c /nologo
+    link /nologo /OUT:hello.exe hello.obj
+    embedManifestExeCheck(target, source, env)
+</code></pre><p>因为我们想这份用户指南关注于SCons实际做的东西，在以后的例子中，将使用-Q选项来删除这些输出信息。</p>
+<p>笔记：
+在编程方面，SConstruct文件是陈述性文件，意味着您告诉SCons你想坐什么，让SCons决定做这些事情的顺序。而不是严格必须的由您去指定明确的执行顺序。</p>
+<p><strong>scons用户指南目录：</strong></p>
+<p><a href="/2014/05/16/scons1/">第一章    编译和安装scons</a>
+<a href="/2014/06/05/scons2/">第二章 简单编译</a></p>
+
+      
+    </div>
+    <footer>
+      
+        
+      
+      <div class="clearfix"></div>
+	  
+<div class="pagepart clearfix">
+  
+    <a href="/2014/06/04/scrapy_install/" class="alignleft prev" title="scrapy安装">scrapy安装</a>
+  
+    
+</div>
+
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  <!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xuh5156"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:xuh5156.github.io/">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/C&C++/">C&amp;C++</a><small>2</small></li>
+  
+    <li><a href="/categories/Python/">Python</a><small>1</small></li>
+  
+    <li><a href="/categories/Scons/">Scons</a><small>2</small></li>
+  
+    <li><a href="/categories/scrapy/">scrapy</a><small>1</small></li>
+  
+    <li><a href="/categories/机器学习/">机器学习</a><small>1</small></li>
+  
+    <li><a href="/categories/自然语言处理/">自然语言处理</a><small>2</small></li>
+  
+    <li><a href="/categories/随笔/">随笔</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/C&C++/" style="font-size: 20.00px;">C&C++</a><a href="/tags/JSON/" style="font-size: 10.00px;">JSON</a><a href="/tags/N-gram/" style="font-size: 20.00px;">N-gram</a><a href="/tags/STL/" style="font-size: 10.00px;">STL</a><a href="/tags/python/" style="font-size: 20.00px;">python</a><a href="/tags/scons/" style="font-size: 20.00px;">scons</a><a href="/tags/scrapy/" style="font-size: 10.00px;">scrapy</a><a href="/tags/机器学习/" style="font-size: 10.00px;">机器学习</a><a href="/tags/清明节 回家/" style="font-size: 10.00px;">清明节 回家</a><a href="/tags/爬虫/" style="font-size: 10.00px;">爬虫</a><a href="/tags/自然语言处理/" style="font-size: 20.00px;">自然语言处理</a><a href="/tags/语言模型/" style="font-size: 20.00px;">语言模型</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">友情链接</h3>
+<ul class="entry">
+<li><a href="http://blog.csdn.net/xuh5156" title="Xuh5156">Xuh5156</a></li>
+<li><a href="http://www.52nlp.cn/" title="52NLP">52NLP</a></li>
+<li><a href="http://zipperary.com/" title="zipperary">zipperary's blog</a></li>
+</ul>
+</div>
+
+  <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=1&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=1179720571&verifier=ac70f406&dpc=1"></iframe>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2014 Xu Hua
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fda8070e36a1616ab04ea7ae3d76db182' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</body>
+</html>
