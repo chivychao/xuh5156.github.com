@@ -58,7 +58,7 @@
       
       
   
-    <h1 class="title"><a href="/2014/07/02/scons3/">scons用户指南(二)</a></h1>
+    <h1 class="title"><a href="/2014/07/02/scons3/">scons用户指南(三)</a></h1>
   
 
     </header>
@@ -66,131 +66,15 @@
       
         <h1 id="-">第三章 编译相关的一些简单事情</h1>
 <p>本章你将会看到几个使用SCons的简单编译配置的例子，这些例子将描述从不同编程语言在不同类型系统上编译程序是多么简单的事情。</p>
-<h2 id="3-1-">3.1 指定目标(输出)文件的名字</h2>
-<p>在您调用Program构建方法时，编译的结果程序的名字和源文件的名字相同。即，下面的命令用来从源文件hello.c编译一个可执行程序，在POSiX系统中，编译的可执行程序名为hello，在windows下名为hello.exe:
-        Program(‘hello.c’)</p>
-<p>如果你想编译一个与源文件不同名称的程序，你只要在源文件名左边添加目标文件名称。</p>
-<pre><code>    Program(‘new_hello’,‘hello.c’)
-</code></pre><p>(SCons首先需要目标文件名，其次是源文件名，这样是为了模仿大多数编程语言的赋值语句，包括Python：“program = source files”。)</p>
-<p>现在SCons在POSIX系统下编译一个名叫new_hello的可执行程序：</p>
-<pre><code>    %scons –Q
-    cc –o hello.o –c hello.c
-    cc –o new_hello hello.o
-</code></pre><p>在Windows下，SCons将会编译一个名为new_hello.exe的可执行程序：
-        C:>scons –Q
-        cl  /Fohello.obj /c hello.c /nologo
-        link /nologo /OUT:hello.exe hello.obj
-        embedManifestExeCheck(target, source, env)</p>
-<h2 id="3-2-">3.2 编译多个源文件</h2>
-<p>你已经学会怎样配置SCons来编译一个源文件程序。通常情况下，你需要从多个输入源文件来构建程序，而不是一个。为了完成这个，你需要将多个源文件放在Python列表中（放在方括号中），如下：</p>
-<pre><code>    Program([‘prog.c’, ‘file1.c’, ‘file2.c’])
-</code></pre><p>上述例子的编译信息如下：</p>
-<pre><code>    %scons –Q
-    cc –o file1.o –c file1.c
-    cc –o file2.o –c file2.c
-    cc –o prog.o –c prog.c
-    cc –o prog prog.o file1.o file2.o
-</code></pre><p>注意，SCons根据列表中的第一个源文件推导出输出程序名称，即因为第一个源文件是prog.c,所以SCons将输出程序命名为prog（windows下为prog.exe）。如果你想指定一个不同的程序名，你将源文件列表放在输出程序名右边即可（SCons把输出文件名放在源文件名的左边，意在模仿赋值语句“program = source files”。）例子如下：
-        Program(‘program’,[‘prog.c’, ‘file1.c’, ‘file2.c’])</p>
-<p>在linux下，输出如下：</p>
-<pre><code>    %scons –Q
-    cc –o file1.o –c file1.c
-    cc –o file2.o –c file2.c
-    cc –o prog.o –c prog.c
-    cc –o program prog.o file1.o file2.o
-</code></pre><p>在windows下：</p>
-<pre><code>    C:\&gt;scons -Q
-    cl /Fofile1.obj /c file1.c /nologo
-    cl /Fofile2.obj /c file2.c /nologo
-    cl /Foprog.obj /c prog.c /nologo
-    link /nologo /OUT:program.exe prog.obj file1.obj file2.obj
-    embedManifestExeCheck(target, source, env)
-</code></pre><h2 id="3-3-glob-">3.3 用Glob生成文件列表</h2>
-<p>你可以使用Glob函数来查找能够匹配确定模版的所有文件，利用标准shell的模式匹配符号*，？和[abc]匹配任何a，b或c。[！abc]被用来匹配除了a，b或c的其他任何字符。这使得编译多文件程序变得容易：</p>
-<pre><code>    Program(‘program’,Glob(‘*.c’))
-</code></pre><p>SCons帮助文档有更详细的关于Glob的内容，详见16章和21章。</p>
-<h2 id="3-4-vs-">3.4指定单个文件VS文件列表</h2>
-<p>我们已经介绍了两种指定程序源文件的方式，一种是文件列表：</p>
-<pre><code>    Program(hello’,[ ‘file1.c’, ‘file2.c’])
-</code></pre><p>另一种是单个文件：</p>
-<pre><code>    Program(‘hello,‘hello.c’)
-</code></pre><p>如果你喜欢保持一致性，你也可以再列表中只放一个文件：</p>
-<pre><code>    Program(‘hello,[‘hello.c’])
-</code></pre><p>SCons方法会接受这两种指定单一文件的方式。事实上，SCons把所有输入都看作是文件列表，但是运行在只有一个文件的时候省略方括号。</p>
-<p>重要：虽然SCons会容许您使用字符串或者列表来代表单个文件名，但是Python会严格区别对待列表和字符串。因此，SCons允许字符串和列表：</p>
-<pre><code>    # The following two calls both work correctly:
-    Program(’program1’, ’program1.c’)
-    Program(’program2’, [’program2.c’])
-</code></pre><p>如果试图在python中混淆字符串和列表会导致错误或者不正确的结果；</p>
-<pre><code>    common_sources = [’file1.c’, ’file2.c’]
-
-    # THE FOLLOWING IS INCORRECT AND GENERATES A PYTHON ERROR
-    # BECAUSE IT TRIES TO ADD A STRING TO A LIST:
-    Program(’program1’, common_sources + ’program1.c’)
-
-    # The following works correctly, because it’s adding two
-    # lists together to make another list.
-    Program(’program2’, common_sources + [’program2.c’])
-</code></pre><h2 id="3-5-">3.5让文件列表更易读</h2>
-<p>使用Python列表表示源文件的一个缺陷是每个文件名必须用引号包围起来（单引号或双引号都可以）。在文件列表比较长是，这就显得累赘和很难读。幸运的是，SCons和Python提供了许多方法来保证SConstruct的易读性。</p>
-<p>为了是长文件列表容易处理，SCons提供了Split函数，它处理一个文件名串，其中文件名以空格或者其他空白字符隔开，并将其转换成一个文件名列表。对前面的例子使用Split函数：</p>
-<pre><code>    Program(’program’, Split(’main.c file1.c file2.c’))
-</code></pre><p>（如果你熟悉Python，你会发现这个与Python中标准string模块中的split()方法很类似，与之不一样的是，Split()不需要一个字符串作为输入，并会包裹一个非字符串的列表，或者当参数已经是一个列表时就不改变参数并返回。这样就很方便的确保任意值都可以通过SCons函数，而不用手动的检查变量的类型。）</p>
-<p>在Program方法中调用Split方法也不是很明智。一个更易读的替代是把Split的输出赋值给一个变量，然后在Program中使用这个变量：</p>
-<pre><code>    src_files = Split(’main.c file1.c file2.c’)
-    Program(’program’, src_files)
-</code></pre><p>最后，Split方法并不关心文件名中空白分隔符的个数。这使得可以从多行字符串中创建文件名列表，这通常使得更容易编辑：</p>
-<pre><code>    src_files = Split(&quot;&quot;&quot;main.c
-                        file1.c
-                        file2.c&quot;&quot;&quot;)
-    Program(’program’, src_files)
-</code></pre><p>（注意在本例中，使用了Python中的三重引号，这使得一个字符串可以包含多行。三种引号中可以是单引号或者双引号。）</p>
-<h2 id="3-6-">3.6 关键字参数</h2>
-<p>SCons允许使用Python关键字来辨别输出文件和输入源文件。输出文件为target，源文件为source，Python语句为：</p>
-<pre><code>    src_files = Split(’main.c file1.c file2.c’)
-    Program(target = ’program’, source = src_files)
-</code></pre><p>因为关键字明确的指出了每个参数的意思，所以可以颠倒顺序：</p>
-<pre><code>    src_files = Split(’main.c file1.c file2.c’)
-    Program(source = src_files, target = ’program’)
-</code></pre><p>是否选择使用关键字来辨别输入输出文件，是否在使用关键字时选择顺序都是取决于您自己，SCons都会一视同仁。</p>
-<h2 id="3-7-">3.7 编译多个程序</h2>
-<p>为了在同一SConstruct文件中编译对个程序，只要简单的多次调用Program方法即可，每个您要构建的程序调用一次：</p>
-<pre><code>    Program(’foo.c’)
-    Program(’bar’, [’bar1.c’, ’bar2.c’])
-</code></pre><p>SCons会构建程序如下：</p>
-<pre><code>    % scons -Q
-    cc -o bar1.o -c bar1.c
-    cc -    o bar2.o -c bar2.c
-    cc -o bar bar1.o bar2.o
-    cc -o foo.o -c foo.c
-    cc -o foo foo.o
-</code></pre><p>注意SCons不一定按照你在Sconstruct文件中指定的顺序来构建程序。SCons认为单独的目标文件必须在结果程序构建之前构建。详见以下章节。</p>
-<h2 id="3-8-">3.8在多个程序间共享源文件</h2>
-<p>在多个程序中共享源文件来复用代码是很常见的。一种实现方式是用公共源文件来创建一个库，把他链接到结果程序中。（创建库文件详见第4章。）</p>
-<p>一个更直接，但是或许不是很方便的方法是简单的在每个程序的源文件列表中包含公共文件：</p>
-<pre><code>    Program(Split(’foo.c common1.c common2.c’))
-    Program(’bar’, Split(’bar1.c bar2.c common1.c common2.c’))
-</code></pre><p>SCons对common1.c和common2.c的目标文件至构建一次，即使结果目标文件被链接到两个可执行文件中：</p>
-<pre><code>    % scons -Q
-    cc -o bar1.o -c bar1.c
-    cc -o bar2.o -c bar2.c
-    cc -o common1.o -c common1.c
-    cc -o common2.o -c common2.c
-    cc -o bar bar1.o bar2.o common1.o common2.o
-    cc -o foo.o -c foo.c
-    cc -o foo foo.o common1.o common2.o
-</code></pre><p>如果两个或多个程序共享很多公共源文件，为每个程序重复这些公共文件列表，在你需要修改公共文件列表时将会是一个大问题。你可以使用Python列表来简化，并使用Python+运算符把它连接到其他列表中：</p>
-<pre><code>    common = [’common1.c’, ’common2.c’]
-    foo_files = [’foo.c’] + common
-    bar_files = [’bar1.c’, ’bar2.c’] + common
-    Program(’foo’, foo_files)
-    Program(’bar’, bar_files)
-</code></pre><p>这在功能上与前面例子相同。</p>
 
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2014/07/02/scons3/#more" class="more-link">阅读全文</a>
+          </div>
         
         
       
